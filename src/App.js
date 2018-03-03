@@ -9,11 +9,16 @@ class BooksApp extends React.Component {
     books: []
   }
 
+  // Initialize the state with the books from the server
   componentDidMount() {
+    this.setBookStateFromServer();
+  }
+
+  // Helper method to set state with books from the server
+  setBookStateFromServer() {
     BooksAPI.getAll().then((allBooks) => {
       this.setState({books: allBooks})
     });
-    
   }
 
   render() {
@@ -47,9 +52,21 @@ class BooksApp extends React.Component {
               <h1>MyReads</h1>
             </div>
             <div className="list-books-content">
-              <Bookshelf title="Currently Reading" books={this.state.books.filter((book) => {return book.shelf === 'currentlyReading'})}/>
-              <Bookshelf title="Want to Read" books={this.state.books.filter((book) => {return book.shelf==='wantToRead'})}/>
-              <Bookshelf title="Read" books={this.state.books.filter((book) => {return book.shelf === 'read'})}/>
+              <Bookshelf
+                title="Currently Reading"
+                moveBook={this.moveBook}
+                books={this.state.books.filter((book) => {return book.shelf === 'currentlyReading'})}
+              />
+              <Bookshelf
+                title="Want to Read"
+                moveBook={this.moveBook}
+                books={this.state.books.filter((book) => {return book.shelf ==='wantToRead'})}
+              />
+              <Bookshelf
+                title="Read"
+                moveBook={this.moveBook}
+                books={this.state.books.filter((book) => {return book.shelf === 'read'})}
+              />
             </div>
             <div className="open-search">
               <Link to='/search'>Add a book</Link>
@@ -58,6 +75,22 @@ class BooksApp extends React.Component {
         )}/>
       </div>
     )
+  }
+
+  // Bound method which when called moves a book to another shelf and then
+  // updates the state with the newly altered server data
+  moveBook = (id, value) => {
+    BooksAPI.get(id).then((book) => 
+      BooksAPI.update(book, value).catch(() => {
+        console.log('Problem changing book destination');
+      }).then(() => {
+        BooksAPI.getAll().then((allBooks) => {
+          this.setState({books: allBooks})
+        });
+      })
+    ).catch(
+      console.log('Problem getting book with id: ' + id)
+    );
   }
 }
 
