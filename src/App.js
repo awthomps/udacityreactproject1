@@ -6,7 +6,26 @@ import Bookshelf from './Bookshelf'
 
 class BooksApp extends React.Component {
   state = {
-    books: []
+    query: '',
+    books: [],
+    queryBooks: []
+  }
+
+  // Method to update the query in the state as well as search the service
+  // using the specified query string.
+  updateQuery = (query) => {
+    console.log(query);
+    BooksAPI.search(query.trim()).then((books) => {
+      if(books.error) {
+        console.log(books.error);
+        this.setState({ queryBooks: []});
+      } else {
+        this.setState({ queryBooks: books});
+      }
+    }).catch((error) => console.log(error));
+    if(query || query.length === 0) {
+      this.setState({query: query })
+    }
   }
 
   // Initialize the state with the books from the server
@@ -37,12 +56,26 @@ class BooksApp extends React.Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author"/>
-
+                <input
+                  type="text"
+                  placeholder="Search by title or author"
+                  value={this.state.query}
+                  onChange={(event) => this.updateQuery(event.target.value)}
+                />
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid"></ol>
+              <ol className="books-grid">
+                {( this.state.query) &&
+                  <div className="list-books-content">
+                    <Bookshelf
+                      title="Results"
+                      moveBook={this.moveBook}
+                      books={this.state.queryBooks}
+                    />
+                  </div>
+                }
+              </ol>
             </div>
           </div>
         )}/>
@@ -81,15 +114,18 @@ class BooksApp extends React.Component {
   // updates the state with the newly altered server data
   moveBook = (id, value) => {
     BooksAPI.get(id).then((book) => 
-      BooksAPI.update(book, value).catch(() => {
+      BooksAPI.update(book, value).catch((error) => {
         console.log('Problem changing book destination');
+        console.log(error);
       }).then(() => {
         BooksAPI.getAll().then((allBooks) => {
           this.setState({books: allBooks})
         });
       })
-    ).catch(
+    ).catch((error) => {
       console.log('Problem getting book with id: ' + id)
+      console.log(error);
+    }
     );
   }
 }
