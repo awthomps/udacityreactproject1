@@ -112,21 +112,15 @@ class BooksApp extends React.Component {
 
   // Bound method which when called moves a book to another shelf and then
   // updates the state with the newly altered server data
-  moveBook = (id, value) => {
-    BooksAPI.get(id).then((book) => 
-      BooksAPI.update(book, value).catch((error) => {
-        console.log('Problem changing book destination');
-        console.log(error);
-      }).then(() => {
-        BooksAPI.getAll().then((allBooks) => {
-          this.setState({books: allBooks})
-        });
-      })
-    ).catch((error) => {
-      console.log('Problem getting book with id: ' + id)
+  moveBook = (book, value) => {
+    BooksAPI.update(book, value).catch((error) => {
+      console.log('Problem changing book destination');
       console.log(error);
-    }
-    );
+    }).then(() => {
+      BooksAPI.getAll().then((allBooks) => {
+        this.setState({books: allBooks})
+      });
+    })
   }
 }
 

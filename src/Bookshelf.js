@@ -1,6 +1,7 @@
 import React from 'react'
 import './App.css'
 import PropTypes from 'prop-types'
+import BookshelfChanger from './BookshelfChanger'
 
 class Bookshelf extends React.Component {
   constructor(props) {
@@ -9,12 +10,6 @@ class Bookshelf extends React.Component {
     }
   }
 
-  // Bound method used to call the moveBook method assigned as a prop
-  moveBookToList = (event) => {
-    if(this.props.moveBook) {
-      this.props.moveBook(event.target.id, event.target.value);
-    }
-  }
   
   render() {
     return (
@@ -32,15 +27,10 @@ class Bookshelf extends React.Component {
                             height: 193,
                             backgroundImage: `url(${(book.imageLinks && book.imageLinks.thumbnail) ? book.imageLinks.thumbnail : ''})` 
                           }}></div>
-                          <div className="book-shelf-changer">
-                            <select defaultValue={book.shelf ? book.shelf : 'none'} id={book.id} onChange={this.moveBookToList}>
-                              <option value="none" disabled>Move to...</option>
-                              <option value="currentlyReading">Currently Reading</option>
-                              <option value="wantToRead">Want to Read</option>
-                              <option value="read" >Read</option>
-                              <option value="none">None</option>
-                            </select>
-                          </div>
+                          <BookshelfChanger
+                            book={book}
+                            moveBook={this.props.moveBook}
+                          />
                         </div>
                         {book.title && <div className="book-title">{book.title}</div>}
                         {book.authors && <div className="book-authors">{book.authors}</div>}
