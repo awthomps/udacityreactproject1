@@ -33,7 +33,7 @@ class Bookshelf extends React.Component {
                           />
                         </div>
                         {book.title && <div className="book-title">{book.title}</div>}
-                        {book.authors && <div className="book-authors">{book.authors}</div>}
+                        {book.authors && <div className="book-authors">{book.authors.join(', ')}</div>}
                       </div>
                     </li>
                   )
