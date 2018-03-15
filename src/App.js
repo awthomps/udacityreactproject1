@@ -58,6 +58,20 @@ class BooksApp extends React.Component {
   }
 
   render() {
+    // streamline populating bookshelves on main page:
+    const shelves = [{
+        title: 'Currently Reading',
+        id: 'currentlyReading'
+      },
+      {
+        title: 'Want to Read',
+        id: 'wantToRead'
+      },
+      {
+        title: 'Read',
+        id: 'read'
+      }
+    ];
     return (
       <div className="app">
         <Route path='/search' render={() => (
@@ -102,21 +116,14 @@ class BooksApp extends React.Component {
               <h1>MyReads</h1>
             </div>
             <div className="list-books-content">
-              <Bookshelf
-                title="Currently Reading"
-                moveBook={this.moveBook}
-                books={this.state.books.filter((book) => {return book.shelf === 'currentlyReading'})}
-              />
-              <Bookshelf
-                title="Want to Read"
-                moveBook={this.moveBook}
-                books={this.state.books.filter((book) => {return book.shelf ==='wantToRead'})}
-              />
-              <Bookshelf
-                title="Read"
-                moveBook={this.moveBook}
-                books={this.state.books.filter((book) => {return book.shelf === 'read'})}
-              />
+              {shelves.map((shelf) => 
+                <Bookshelf
+                  key={shelf.id}
+                  title={shelf.title}
+                  moveBook={this.moveBook}
+                  books={this.state.books.filter((book) => {return book.shelf === shelf.id})}
+                />
+              )}
             </div>
             <div className="open-search">
               <Link to='/search'>Add a book</Link>
