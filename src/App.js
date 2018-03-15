@@ -15,14 +15,31 @@ class BooksApp extends React.Component {
   // using the specified query string.
   updateQuery = (query) => {
     console.log(query);
-    BooksAPI.search(query.trim()).then((books) => {
-      if(books.error) {
-        console.log(books.error);
-        this.setState({ queryBooks: []});
-      } else {
-        this.setState({ queryBooks: books});
-      }
+    if(!query) {
+      query = '';
+    }
+    //Get all books to set which shelf each book is on
+    BooksAPI.getAll().then((allBooks) => {
+      this.setState({books: allBooks});
+      BooksAPI.search(query.trim()).then((books) => {
+        if(books.error) {
+          console.log(books.error);
+          this.setState({ queryBooks: []});
+        } else {
+          //set shelves for applicable books:
+          for(var i = 0; i < books.length; ++i) {
+            for(var j = 0; j < allBooks.length; ++j) {
+              if(books[i].id === allBooks[j].id) {
+                books[i].shelf = allBooks[j].shelf;
+              }
+            }
+          }
+          this.setState({ queryBooks: books});
+        }
+      }).catch((error) => console.log(error));
     }).catch((error) => console.log(error));
+
+    //set query state
     if(query || query.length === 0) {
       this.setState({query: query })
     }
@@ -117,9 +134,9 @@ class BooksApp extends React.Component {
       console.log('Problem changing book destination');
       console.log(error);
     }).then(() => {
-      BooksAPI.getAll().then((allBooks) => {
-        this.setState({books: allBooks})
-      });
+      //make sure query gets updated when a book is moved to make sure
+      //that it appears on the correct shelf in the query page:
+      this.updateQuery(this.state.query);
     })
   }
 }
