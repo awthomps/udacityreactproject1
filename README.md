@@ -4,7 +4,7 @@
 MyReads is a simple webapp for managing a personal reading list. On the main page, it lists books in 3 different 'bookshelves': 'Currently Reading', 'Want to Read', and 'Read'. It provides the means to move books between 'shelves' and even search for more books to add to one of the shelves on a separate 'search' page.
 
 ## Installation
-1. Open up a command window and navigate to the directory you wish to install MyReads on your machine (the command should be '*cd \<directory\>*' where *\<directory\>\* is your desired directory).
+1. Open up a command window and navigate to the directory you wish to install MyReads on your machine (the command should be '*cd \<directory\>*' where *\<directory\>* is your desired directory).
 2. Run the command '*git clone https://github.com/awthomps/udacityreactproject1.git*' and after a moment, the project shall download and should say 'done.'
 3. After the project has been 'cloned', change directories to the project file 'udacityreactproject1' by entering the following command in your command window: '*cd udacityreactproject1*'
 4. Now you may proceed to start installing the necessary dependencies for the project. Please enter the following command to install: '*npm install*'. This may take some time.
